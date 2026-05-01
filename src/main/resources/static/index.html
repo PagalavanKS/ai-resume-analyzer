@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI Resume Analyzer</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<main class="app-shell">
+    <section class="hero">
+        <div class="intro">
+            <p class="eyebrow">AI Resume Analyzer</p>
+            <h1>Tune your resume for the role.</h1>
+            <p>Compare resume text with a job description and get a clear fit score, keyword gaps, and practical improvements.</p>
+        </div>
+
+        <div class="hero-panel" aria-label="Analyzer snapshot">
+            <span class="signal"></span>
+            <strong>Resume Match</strong>
+            <p>Skills, experience, education, keywords</p>
+        </div>
+    </section>
+
+    <section class="workspace">
+        <form id="analysis-form" class="analysis-form">
+            <div class="field-card">
+                <div class="field-header">
+                    <label for="resumeText">Resume Text</label>
+                    <span>Candidate profile</span>
+                </div>
+                <textarea id="resumeText" name="resumeText" required placeholder="Paste resume text here..."></textarea>
+            </div>
+
+            <div class="field-card">
+                <div class="field-header">
+                    <label for="jobDescription">Job Description</label>
+                    <span>Target role</span>
+                </div>
+                <textarea id="jobDescription" name="jobDescription" required placeholder="Paste job description here..."></textarea>
+            </div>
+
+            <div class="actions">
+                <button id="analyzeButton" type="submit">Analyze Resume</button>
+                <p>Results update instantly after analysis.</p>
+            </div>
+        </form>
+    </section>
+
+    <section class="results" aria-live="polite">
+        <div class="section-title">
+            <div>
+                <p class="eyebrow">Analysis</p>
+                <h2>Match Overview</h2>
+            </div>
+            <span id="statusPill">Ready</span>
+        </div>
+
+        <div class="score-grid">
+            <article>
+                <span>Overall</span>
+                <strong id="overallScore">--</strong>
+            </article>
+            <article>
+                <span>Skills</span>
+                <strong id="skillsScore">--</strong>
+            </article>
+            <article>
+                <span>Experience</span>
+                <strong id="experienceScore">--</strong>
+            </article>
+            <article>
+                <span>Education</span>
+                <strong id="educationScore">--</strong>
+            </article>
+        </div>
+
+        <p id="summary" class="summary">Paste your resume and job description, then run an analysis to see the result.</p>
+
+        <div class="result-columns">
+            <article>
+                <h2>Matched Keywords</h2>
+                <ul id="matchedKeywords"></ul>
+            </article>
+            <article>
+                <h2>Missing Keywords</h2>
+                <ul id="missingKeywords"></ul>
+            </article>
+            <article>
+                <h2>Strengths</h2>
+                <ul id="strengths"></ul>
+            </article>
+            <article>
+                <h2>Suggestions</h2>
+                <ul id="suggestions"></ul>
+            </article>
+        </div>
+    </section>
+</main>
+
+<script src="/app.js"></script>
+</body>
+</html>

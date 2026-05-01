@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: ai-resume-analyzer
+    env: docker
+    plan: free
+    autoDeploy: true
+    healthCheckPath: /api/resume/health
