@@ -34,6 +34,19 @@ public class ResumeAnalysisService {
             "problems", "process", "provide", "related", "required", "requirements", "responsibilities",
             "role", "skills", "solutions", "strong", "support", "team", "teams", "using", "work", "working"
     );
+    private static final Set<String> MAJOR_KEYWORDS = Set.of(
+            "agile", "ai", "angular", "ansible", "api", "apis", "automation", "aws", "azure",
+            "backend", "boot", "bootstrap", "c", "c#", "c++", "ci", "ci/cd", "cloud", "css",
+            "database", "databases", "debugging", "deployment", "devops", "django", "docker",
+            "ec2", "express", "fastapi", "figma", "flask", "frontend", "git", "github",
+            "gitlab", "golang", "graphql", "hibernate", "html", "java", "javascript", "jenkins",
+            "jira", "jquery", "json", "junit", "kafka", "kotlin", "kubernetes", "lambda",
+            "linux", "machine", "microservices", "mongodb", "mvc", "mysql", "next.js", "node",
+            "node.js", "nosql", "oauth", "oracle", "postgresql", "python", "react", "redis",
+            "rest", "restful", "ruby", "s3", "scrum", "security", "selenium", "spring",
+            "springboot", "spring-boot", "sql", "tailwind", "testing", "typescript", "ui",
+            "unit", "ux", "vue"
+    );
     private static final Set<String> EXPERIENCE_TERMS = Set.of(
             "experience", "worked", "built", "developed", "managed", "led", "delivered", "implemented",
             "designed", "optimized", "deployed", "maintained", "improved", "reduced", "increased"
@@ -58,7 +71,7 @@ public class ResumeAnalysisService {
         }
 
         Set<String> resumeKeywords = extractKeywords(resumeText);
-        Set<String> jobKeywords = extractKeywords(jobDescription);
+        Set<String> jobKeywords = extractMajorKeywords(jobDescription);
 
         List<String> matchedKeywords = jobKeywords.stream()
                 .filter(resumeKeywords::contains)
@@ -105,6 +118,21 @@ public class ResumeAnalysisService {
                         .thenComparing(Map.Entry.comparingByKey()))
                 .limit(60)
                 .map(Map.Entry::getKey)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    private Set<String> extractMajorKeywords(String text) {
+        Set<String> extractedKeywords = extractKeywords(text);
+        Set<String> majorKeywords = extractedKeywords.stream()
+                .filter(MAJOR_KEYWORDS::contains)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        if (!majorKeywords.isEmpty()) {
+            return majorKeywords;
+        }
+
+        return extractedKeywords.stream()
+                .limit(12)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 

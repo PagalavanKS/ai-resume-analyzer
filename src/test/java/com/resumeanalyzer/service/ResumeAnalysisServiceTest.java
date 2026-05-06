@@ -42,4 +42,22 @@ class ResumeAnalysisServiceTest {
                 .contains("azure", "cloud", "databases", "debugging", "deployment");
         assertThat(response.skillsScore()).isGreaterThanOrEqualTo(80);
     }
+
+    @Test
+    void usesOnlyMajorJobDescriptionKeywordsForScoring() {
+        String resume = "Java Spring Boot REST API developer with MySQL and AWS deployment experience.";
+        String job = """
+                We need a candidate with strong communication, analytical ability, clean code practices,
+                attention to detail, cross-functional collaboration, and a bachelor degree.
+                Main technical skills: Java, Spring Boot, REST API, MySQL, AWS, Docker, Kubernetes.
+                """;
+
+        AnalysisResponse response = service.analyzeText(resume, job);
+
+        assertThat(response.missingKeywords())
+                .doesNotContain("communication", "analytical", "ability", "attention", "bachelor", "degree");
+        assertThat(response.missingKeywords()).contains("docker", "kubernetes");
+        assertThat(response.matchedKeywords()).contains("java", "spring", "rest", "api", "mysql", "aws");
+        assertThat(response.skillsScore()).isGreaterThanOrEqualTo(60);
+    }
 }
