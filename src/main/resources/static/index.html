@@ -27,9 +27,14 @@
             <div class="field-card">
                 <div class="field-header">
                     <label for="resumeText">Resume Text</label>
-                    <span>Candidate profile</span>
+                    <span>Paste text or upload a file</span>
                 </div>
-                <textarea id="resumeText" name="resumeText" required placeholder="Paste resume text here..."></textarea>
+                <textarea id="resumeText" name="resumeText" placeholder="Paste resume text here..."></textarea>
+                <div class="upload-row">
+                    <label class="file-picker" for="resumeFile">Upload Resume</label>
+                    <input id="resumeFile" name="resumeFile" type="file" accept=".pdf,.doc,.docx,.txt">
+                    <span id="fileName">PDF, DOC, DOCX, or TXT</span>
+                </div>
             </div>
 
             <div class="field-card">
@@ -42,6 +47,7 @@
 
             <div class="actions">
                 <button id="analyzeButton" type="submit">Analyze Resume</button>
+                <button id="downloadReportButton" type="button" disabled>Download PDF Report</button>
                 <p>Results update instantly after analysis.</p>
             </div>
         </form>
@@ -60,6 +66,10 @@
             <article>
                 <span>Overall</span>
                 <strong id="overallScore">--</strong>
+            </article>
+            <article>
+                <span>ATS</span>
+                <strong id="atsScore">--</strong>
             </article>
             <article>
                 <span>Skills</span>
@@ -90,10 +100,18 @@
                 <h2>Suggestions</h2>
                 <ul id="suggestions"></ul>
             </article>
+            <article>
+                <h2>AI Suggestions</h2>
+                <ul id="aiSuggestions"></ul>
+            </article>
+            <article>
+                <h2>ATS Findings</h2>
+                <ul id="atsFindings"></ul>
+            </article>
         </div>
     </section>
 </main>
 
-<script src="/app.js?v=3"></script>
+<script src="/app.js?v=4"></script>
 </body>
 </html>

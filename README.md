@@ -11,10 +11,13 @@ The project includes both the **frontend website** and the **Spring Boot backend
 ## ✨ Features
 
 - 📝 Paste resume text and job description
-- 📊 Get overall, skills, and experience scores
+- 📄 Upload PDF, DOC, DOCX, or TXT resumes from the frontend
+- 📊 Get overall, ATS, skills, and experience scores
 - ✅ View matched keywords
 - 🔍 Find missing keywords from the job description
 - 💡 Receive resume improvement suggestions
+- 🧠 View AI-style suggestions for stronger resume bullets
+- 🧾 Generate a printable PDF report from the analysis result
 - 🌐 Frontend and backend served from one Spring Boot app
 - 🐳 Docker-ready deployment
 

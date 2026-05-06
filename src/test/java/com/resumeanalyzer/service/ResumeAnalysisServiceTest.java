@@ -23,6 +23,9 @@ class ResumeAnalysisServiceTest {
         assertThat(response.matchedKeywords()).contains("java", "spring", "boot");
         assertThat(response.missingKeywords()).contains("docker", "aws");
         assertThat(response.suggestions()).isNotEmpty();
+        assertThat(response.atsScore()).isBetween(1, 100);
+        assertThat(response.aiSuggestions()).isNotEmpty();
+        assertThat(response.atsFindings()).isNotEmpty();
     }
 
     @Test

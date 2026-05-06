@@ -87,18 +87,24 @@ public class ResumeAnalysisService {
         int skillsScore = calculateKeywordScore(matchedKeywords.size(), jobKeywords.size());
         int experienceScore = calculateSectionScore(resumeText, EXPERIENCE_TERMS);
         int overallScore = clamp(Math.round(skillsScore * 0.75f + experienceScore * 0.25f));
+        int atsScore = calculateAtsScore(resumeText, skillsScore, experienceScore, matchedKeywords.size());
 
         List<String> strengths = buildStrengths(matchedKeywords, experienceScore);
         List<String> suggestions = buildSuggestions(missingKeywords, experienceScore, resumeText);
+        List<String> aiSuggestions = buildAiSuggestions(missingKeywords, experienceScore, resumeText);
+        List<String> atsFindings = buildAtsFindings(resumeText, matchedKeywords.size(), missingKeywords.size());
 
         return new AnalysisResponse(
                 overallScore,
+                atsScore,
                 skillsScore,
                 experienceScore,
                 matchedKeywords,
                 missingKeywords,
                 strengths,
                 suggestions,
+                aiSuggestions,
+                atsFindings,
                 buildSummary(overallScore)
         );
     }
@@ -180,6 +186,63 @@ public class ResumeAnalysisService {
             suggestions.add("Use numbers where possible, such as performance gains, users served, cost saved, or time reduced");
         }
         return deduplicate(suggestions);
+    }
+
+    private int calculateAtsScore(String resumeText, int skillsScore, int experienceScore, int matchedKeywordCount) {
+        int metricScore = containsMetric(resumeText) ? 100 : 35;
+        int lengthScore = calculateResumeLengthScore(resumeText);
+        int keywordPresenceScore = matchedKeywordCount >= 5 ? 100 : matchedKeywordCount * 20;
+
+        return clamp(Math.round(
+                skillsScore * 0.45f +
+                        experienceScore * 0.25f +
+                        metricScore * 0.15f +
+                        lengthScore * 0.10f +
+                        keywordPresenceScore * 0.05f
+        ));
+    }
+
+    private int calculateResumeLengthScore(String resumeText) {
+        long wordCount = WORD_PATTERN.matcher(resumeText).results().count();
+        if (wordCount < 80) {
+            return 35;
+        }
+        if (wordCount <= 900) {
+            return 100;
+        }
+        return 70;
+    }
+
+    private List<String> buildAiSuggestions(List<String> missingKeywords, int experienceScore, String resumeText) {
+        List<String> aiSuggestions = new ArrayList<>();
+        if (!missingKeywords.isEmpty()) {
+            aiSuggestions.add("Rewrite one or two project bullets to naturally include: " + String.join(", ", missingKeywords.stream().limit(5).toList()) + ".");
+        }
+        if (experienceScore < 50) {
+            aiSuggestions.add("Start bullets with action verbs like built, implemented, optimized, deployed, or improved.");
+        }
+        if (!containsMetric(resumeText)) {
+            aiSuggestions.add("Add measurable impact, for example response time reduced by 30%, handled 1,000 users, or automated 5 hours of work weekly.");
+        }
+        aiSuggestions.add("Keep the resume ATS-friendly with clear headings, simple formatting, and role-specific technical keywords.");
+        return deduplicate(aiSuggestions);
+    }
+
+    private List<String> buildAtsFindings(String resumeText, int matchedKeywordCount, int missingKeywordCount) {
+        List<String> findings = new ArrayList<>();
+        findings.add(matchedKeywordCount >= 5
+                ? "Good keyword coverage for the target role"
+                : "Keyword coverage is low; add more relevant technical terms from the job description");
+        findings.add(containsMetric(resumeText)
+                ? "Includes measurable achievements"
+                : "Add numbers or percentages to improve ATS and recruiter readability");
+        findings.add(missingKeywordCount == 0
+                ? "No major missing keywords detected"
+                : "Some major job keywords are still missing");
+        findings.add(calculateResumeLengthScore(resumeText) >= 70
+                ? "Resume length looks acceptable for ATS parsing"
+                : "Resume text is short; add more project, responsibility, and impact details");
+        return findings;
     }
 
     private boolean containsMetric(String text) {
