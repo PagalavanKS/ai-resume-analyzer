@@ -24,4 +24,22 @@ class ResumeAnalysisServiceTest {
         assertThat(response.missingKeywords()).contains("docker", "aws");
         assertThat(response.suggestions()).isNotEmpty();
     }
+
+    @Test
+    void ignoresGenericKeywordsWhenFindingGaps() {
+        String resume = "Azure cloud developer with databases debugging and deployment experience.";
+        String job = """
+                Strong analytical ability and attention to clean code.
+                Bachelor degree preferred.
+                Azure cloud databases debugging deployment.
+                """;
+
+        AnalysisResponse response = service.analyzeText(resume, job);
+
+        assertThat(response.missingKeywords())
+                .doesNotContain("ability", "analytical", "attention", "bachelor", "clean", "code", "degree");
+        assertThat(response.matchedKeywords())
+                .contains("azure", "cloud", "databases", "debugging", "deployment");
+        assertThat(response.skillsScore()).isGreaterThanOrEqualTo(80);
+    }
 }

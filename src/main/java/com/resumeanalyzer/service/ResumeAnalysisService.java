@@ -27,6 +27,13 @@ public class ResumeAnalysisService {
             "these", "they", "this", "through", "too", "under", "until", "very", "was", "were", "what",
             "when", "where", "which", "while", "who", "why", "will", "with", "you", "your"
     );
+    private static final Set<String> LOW_SIGNAL_KEYWORDS = Set.of(
+            "ability", "analytical", "application", "applications", "assist", "attention", "bachelor", "based", "building",
+            "clean", "code", "communication", "cross-functional", "cycles", "define", "degree", "excellent",
+            "fast", "good", "high", "including", "knowledge", "learn", "multiple", "preferred", "problem",
+            "problems", "process", "provide", "related", "required", "requirements", "responsibilities",
+            "role", "skills", "solutions", "strong", "support", "team", "teams", "using", "work", "working"
+    );
     private static final Set<String> EXPERIENCE_TERMS = Set.of(
             "experience", "worked", "built", "developed", "managed", "led", "delivered", "implemented",
             "designed", "optimized", "deployed", "maintained", "improved", "reduced", "increased"
@@ -89,6 +96,7 @@ public class ResumeAnalysisService {
                 .map(match -> normalize(match.group()))
                 .filter(word -> word.length() > 2)
                 .filter(word -> !STOP_WORDS.contains(word))
+                .filter(word -> !LOW_SIGNAL_KEYWORDS.contains(word))
                 .collect(Collectors.groupingBy(word -> word, Collectors.counting()));
 
         return frequencies.entrySet()
@@ -101,7 +109,7 @@ public class ResumeAnalysisService {
     }
 
     private String normalize(String word) {
-        return word.replaceAll("^[^a-zA-Z0-9]+|[^a-zA-Z0-9+#.\\-]+$", "");
+        return word.replaceAll("^[^a-zA-Z0-9]+|[^a-zA-Z0-9+#]+$", "");
     }
 
     private int calculateKeywordScore(int matchedCount, int totalCount) {
