@@ -14,7 +14,6 @@ class ResumeAnalysisServiceTest {
         String resume = """
                 Java developer with Spring Boot experience.
                 Built REST APIs, deployed applications, and improved latency by 30%.
-                Bachelor degree in Computer Science.
                 """;
         String job = "Looking for Java Spring Boot REST API developer with Docker and AWS experience.";
 

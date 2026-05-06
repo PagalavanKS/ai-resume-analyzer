@@ -6,7 +6,6 @@ public record AnalysisResponse(
         int overallScore,
         int skillsScore,
         int experienceScore,
-        int educationScore,
         List<String> matchedKeywords,
         List<String> missingKeywords,
         List<String> strengths,

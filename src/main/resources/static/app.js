@@ -5,7 +5,6 @@ const fields = {
     overallScore: document.querySelector("#overallScore"),
     skillsScore: document.querySelector("#skillsScore"),
     experienceScore: document.querySelector("#experienceScore"),
-    educationScore: document.querySelector("#educationScore"),
     summary: document.querySelector("#summary"),
     matchedKeywords: document.querySelector("#matchedKeywords"),
     missingKeywords: document.querySelector("#missingKeywords"),
@@ -56,7 +55,6 @@ function renderResults(data) {
     fields.overallScore.textContent = `${data.overallScore}%`;
     fields.skillsScore.textContent = `${data.skillsScore}%`;
     fields.experienceScore.textContent = `${data.experienceScore}%`;
-    fields.educationScore.textContent = `${data.educationScore}%`;
     fields.summary.textContent = data.summary;
     fields.statusPill.textContent = "Complete";
 

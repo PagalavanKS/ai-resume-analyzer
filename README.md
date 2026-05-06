@@ -11,7 +11,7 @@ The project includes both the **frontend website** and the **Spring Boot backend
 ## ✨ Features
 
 - 📝 Paste resume text and job description
-- 📊 Get overall, skills, experience, and education scores
+- 📊 Get overall, skills, and experience scores
 - ✅ View matched keywords
 - 🔍 Find missing keywords from the job description
 - 💡 Receive resume improvement suggestions

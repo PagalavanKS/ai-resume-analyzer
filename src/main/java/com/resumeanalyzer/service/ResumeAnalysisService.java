@@ -27,9 +27,6 @@ public class ResumeAnalysisService {
             "these", "they", "this", "through", "too", "under", "until", "very", "was", "were", "what",
             "when", "where", "which", "while", "who", "why", "will", "with", "you", "your"
     );
-    private static final Set<String> EDUCATION_TERMS = Set.of(
-            "bachelor", "master", "degree", "university", "college", "b.tech", "m.tech", "phd", "certification"
-    );
     private static final Set<String> EXPERIENCE_TERMS = Set.of(
             "experience", "worked", "built", "developed", "managed", "led", "delivered", "implemented",
             "designed", "optimized", "deployed", "maintained", "improved", "reduced", "increased"
@@ -69,17 +66,15 @@ public class ResumeAnalysisService {
 
         int skillsScore = calculateKeywordScore(matchedKeywords.size(), jobKeywords.size());
         int experienceScore = calculateSectionScore(resumeText, EXPERIENCE_TERMS);
-        int educationScore = calculateSectionScore(resumeText, EDUCATION_TERMS);
-        int overallScore = clamp(Math.round(skillsScore * 0.6f + experienceScore * 0.25f + educationScore * 0.15f));
+        int overallScore = clamp(Math.round(skillsScore * 0.75f + experienceScore * 0.25f));
 
-        List<String> strengths = buildStrengths(matchedKeywords, experienceScore, educationScore);
-        List<String> suggestions = buildSuggestions(missingKeywords, experienceScore, educationScore, resumeText);
+        List<String> strengths = buildStrengths(matchedKeywords, experienceScore);
+        List<String> suggestions = buildSuggestions(missingKeywords, experienceScore, resumeText);
 
         return new AnalysisResponse(
                 overallScore,
                 skillsScore,
                 experienceScore,
-                educationScore,
                 matchedKeywords,
                 missingKeywords,
                 strengths,
@@ -123,7 +118,7 @@ public class ResumeAnalysisService {
         return clamp(score);
     }
 
-    private List<String> buildStrengths(List<String> matchedKeywords, int experienceScore, int educationScore) {
+    private List<String> buildStrengths(List<String> matchedKeywords, int experienceScore) {
         List<String> strengths = new ArrayList<>();
         if (!matchedKeywords.isEmpty()) {
             strengths.add("Matches important job keywords: " + String.join(", ", matchedKeywords.stream().limit(8).toList()));
@@ -131,25 +126,19 @@ public class ResumeAnalysisService {
         if (experienceScore >= 50) {
             strengths.add("Shows relevant project or work experience signals");
         }
-        if (educationScore >= 40) {
-            strengths.add("Includes education or certification details");
-        }
         if (strengths.isEmpty()) {
             strengths.add("Resume text was parsed successfully and is ready for targeted improvement");
         }
         return strengths;
     }
 
-    private List<String> buildSuggestions(List<String> missingKeywords, int experienceScore, int educationScore, String resumeText) {
+    private List<String> buildSuggestions(List<String> missingKeywords, int experienceScore, String resumeText) {
         List<String> suggestions = new ArrayList<>();
         if (!missingKeywords.isEmpty()) {
             suggestions.add("Add truthful examples using these job keywords: " + String.join(", ", missingKeywords.stream().limit(10).toList()));
         }
         if (experienceScore < 50) {
             suggestions.add("Add measurable project outcomes, responsibilities, and tools used in each role");
-        }
-        if (educationScore < 40) {
-            suggestions.add("Include education, certifications, or relevant coursework if applicable");
         }
         if (!containsMetric(resumeText)) {
             suggestions.add("Use numbers where possible, such as performance gains, users served, cost saved, or time reduced");
