@@ -17,9 +17,9 @@ form.addEventListener("submit", async (event) => {
     event.preventDefault();
     button.disabled = true;
     button.textContent = "Analyzing...";
-    fields.summary.className = "summary";
-    fields.summary.textContent = "Analyzing resume fit...";
-    fields.statusPill.textContent = "Analyzing";
+    setClassName(fields.summary, "summary");
+    setText(fields.summary, "Analyzing resume fit...");
+    setText(fields.statusPill, "Analyzing");
 
     const payload = {
         resumeText: form.resumeText.value,
@@ -42,9 +42,9 @@ form.addEventListener("submit", async (event) => {
 
         renderResults(data);
     } catch (error) {
-        fields.summary.className = "summary error";
-        fields.summary.textContent = error.message;
-        fields.statusPill.textContent = "Error";
+        setClassName(fields.summary, "summary error");
+        setText(fields.summary, error.message);
+        setText(fields.statusPill, "Error");
     } finally {
         button.disabled = false;
         button.textContent = "Analyze Resume";
@@ -52,11 +52,11 @@ form.addEventListener("submit", async (event) => {
 });
 
 function renderResults(data) {
-    fields.overallScore.textContent = `${data.overallScore}%`;
-    fields.skillsScore.textContent = `${data.skillsScore}%`;
-    fields.experienceScore.textContent = `${data.experienceScore}%`;
-    fields.summary.textContent = data.summary;
-    fields.statusPill.textContent = "Complete";
+    setText(fields.overallScore, `${data.overallScore}%`);
+    setText(fields.skillsScore, `${data.skillsScore}%`);
+    setText(fields.experienceScore, `${data.experienceScore}%`);
+    setText(fields.summary, data.summary);
+    setText(fields.statusPill, "Complete");
 
     renderList(fields.matchedKeywords, data.matchedKeywords);
     renderList(fields.missingKeywords, data.missingKeywords);
@@ -65,6 +65,10 @@ function renderResults(data) {
 }
 
 function renderList(element, values) {
+    if (!element) {
+        return;
+    }
+
     element.innerHTML = "";
     if (!values || values.length === 0) {
         const item = document.createElement("li");
@@ -78,4 +82,16 @@ function renderList(element, values) {
         item.textContent = value;
         element.appendChild(item);
     });
+}
+
+function setText(element, value) {
+    if (element) {
+        element.textContent = value;
+    }
+}
+
+function setClassName(element, value) {
+    if (element) {
+        element.className = value;
+    }
 }
